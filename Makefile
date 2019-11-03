@@ -3,7 +3,7 @@
 
 all: SCAS
 
-SCAS:  SCAS.o
+SCAS:  SCAS.o queue.o
 	gcc -w -o $@ $^
 
 clean:

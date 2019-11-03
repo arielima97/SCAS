@@ -2,6 +2,7 @@
 #include <stdbool.h>
 #include <locale.h>
 #include <string.h>
+#include "queue.h"
 
 enum typeServiceInterval {BY_N_OF_SERVICES, BY_TIME};
 typedef enum typeServiceInterval typeSI;
@@ -16,10 +17,6 @@ struct ServiceConfiguration
 };
 
 typedef struct ServiceConfiguration sConfig;
-
-enum attendanceComplexity { EXPRESS = 2, NORMAL = 3, COMPLEX = 4 };
-typedef enum attendanceComplexity attComp;
-
 
 bool config_system_interface(sConfig* configuration)
 {
@@ -109,14 +106,48 @@ bool config_system_interface(sConfig* configuration)
         return true;
 }
 
+bool insert_costumers()
+{
+    printf("\t\t<< SCAS - Cadastro clientes >>\n");
+    printf("\t (1) Cadastrar clientes\n");
+    printf("\t (2) Carregar último cadastro de clientes\n");
+
+
+}
+
 sConfig global_config;
 
 int main()
 {   
+    /*
     bool isConfig = false;
     do
         isConfig = config_system_interface(&global_config);
     while(!isConfig);
+    */
+
+    queue costumers;
+
+    queue_initialize(&costumers);
+    printf("Initial size: %d\n", costumers.size);
+    for (int i = 0; i < 1000000; i++)
+    {
+        queue_add(&costumers, i, i%3);
+        printf("Size: %d - %d %d added.\n", costumers.size, i, i%3);
+    }
+
+    while (costumers.size != 0)
+    {
+        int x;
+        attComp y; 
+        queue_remove(&costumers, &x, &y);
+        printf("Size: %d - %d %d removed.\n", costumers.size, x, y);
+    }
+
+
+    
+
+
 
 
 

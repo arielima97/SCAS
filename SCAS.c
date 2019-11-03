@@ -17,6 +17,10 @@ struct ServiceConfiguration
 
 typedef struct ServiceConfiguration sConfig;
 
+enum attendanceComplexity { EXPRESS = 2, NORMAL = 3, COMPLEX = 4 };
+typedef enum attendanceComplexity attComp;
+
+
 bool config_system_interface(sConfig* configuration)
 {
     setlocale(LC_ALL, "Portuguese");
@@ -113,5 +117,7 @@ int main()
     do
         isConfig = config_system_interface(&global_config);
     while(!isConfig);
+
+
 
 }

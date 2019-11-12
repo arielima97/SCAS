@@ -120,16 +120,27 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
     scanf("%d", &read_command);
     if(read_command == 1)
     {
-        printf("Inserir dado dos clientes no seguinte formato:\n");
-        printf("[TEMPO EM MINUTOS] [COMPLEXIDADE]\n");
-        printf("TEMPO EM MINUTOS - Inteiro >= 0.\n");
-        printf("COMPLEXIDADE - EXPRESSO = 1 / NORMAL = 2 / COMPLEXO = 3\n");
+        printf("Inserir dado dos clientes em ordem de chegada no seguinte formato:\n");
+        printf("[PRIORIDADE][TEMPO EM MINUTOS] [COMPLEXIDADE]\n");
+        printf("PRIORIDADE: Booleano.\n");
+        printf("TEMPO EM MINUTOS: Inteiro >= 0.\n");
+        printf("COMPLEXIDADE: EXPRESSO = 1 / NORMAL = 2 / COMPLEXO = 3\n");
         bool flag = 0;
+        int id = 0;
+        int last_time = 0;
         do
         {
-
+            bool priority;
+            int timestamp, complexity;
+            scanf("%d %d %d", &priority, &timestamp, &complexity);
+            if(timestamp == -1 && complexity == -1) break;
+            if(timestamp < last_time) timestamp = last_time;
+            last_time = timestamp;
+            if(complexity < 1 || complexity > 3) complexity = 1;
+            queue_add(&(*_costumers), priority, timestamp, id, 0, complexity);
+            id++;
         }
-        while(!flag)
+        while(!flag);
     }
     else
     {
@@ -139,7 +150,7 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
 
     for (int i = 0; i < 1000; ++i)
     {
-        printf("%d %d\n", _password_check[i], rand() % 1000); 
+        printf("%d %d\n", _password_check[i], rand() % 10); 
         _password_check[i] = false;
     }
 
@@ -149,49 +160,17 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
 sConfig global_config;
 
 int main()
-{   
-    memset(password_check, 1, 1000); // Set all values to 1 to indicate all passwords are available
-    srand (time(NULL)); // Set a seed for generate random number
-    queue costumers;    
-
-    insert_costumers(password_check, &costumers);
-
-    for (int i = 0; i < 1000; ++i)
-    {
-        printf("%d %d\n", password_check[i], rand() % 1000); 
-    }
-
-
+{  
+    /* 
     bool isConfig = false;
     do
         isConfig = config_system_interface(&global_config);
     while(!isConfig);
+    */
+    memset(password_check, 1, 1000); // Set all values to 1 to indicate all passwords are available
+    srand (time(NULL)); // Set a seed for generate random number
     
-    
-
-
-
-    queue_initialize(&costumers);
-    printf("Initial size: %d\n", costumers.size);
-    for (int i = 0; i < 1000000; i++)
-    {
-        queue_add(&costumers, i, i%3);
-        printf("Size: %d - %d %d added.\n", costumers.size, i, i%3);
-    }
-
-    while (costumers.size != 0)
-    {
-        int x;
-        attComp y; 
-        queue_remove(&costumers, &x, &y);
-        printf("Size: %d - %d %d removed.\n", costumers.size, x, y);
-    }
-
-
-    
-
-
-
-
-
+    queue costumers;
+    queue_initialize(&costumers);    
+    insert_costumers(password_check, &costumers);
 }

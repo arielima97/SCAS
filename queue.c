@@ -9,11 +9,14 @@ void queue_initialize(queue* q)
     q->size = 0;
 }
 
-queue_item* queue_item_allocate(int _password, attComp _complexity)
+queue_item* queue_item_allocate(bool _priority, int _timestamp, int _ID, int _password, attComp _complexity)
 {
     queue_item* new_item = (queue_item*) malloc(sizeof(queue_item));
     if(new_item != NULL)
     {
+        new_item->priority = _priority;
+        new_item->timestamp = _timestamp;
+        new_item->ID = _ID;
         new_item->password = _password;
         new_item->complexity = _complexity;
         new_item->next_item = NULL;
@@ -21,9 +24,9 @@ queue_item* queue_item_allocate(int _password, attComp _complexity)
     return new_item;
 }
 
-bool queue_add(queue* q, int _password, attComp _complexity)
+bool queue_add(queue* q, bool _priority, int _timestamp, int _ID, int _password, attComp _complexity)
 {
-    queue_item* new_item = queue_item_allocate(_password, _complexity);
+    queue_item* new_item = queue_item_allocate(_priority, _timestamp, _ID, _password, _complexity);
     if(new_item == NULL)
         return false;
 
@@ -37,12 +40,15 @@ bool queue_add(queue* q, int _password, attComp _complexity)
     return true;
 }
 
-bool queue_remove(queue* q, int* _password, attComp* _complexity)
+bool queue_remove(queue* q, bool* _priority, int* _timestamp, int* _ID, int* _password, attComp* _complexity)
 {
     if(q->size == 0)
         return false;
     
     queue_item* temp = q->first_item;
+    *_priority = temp->priority;
+    *_timestamp = temp->timestamp;
+    *_ID = temp->ID;
     *_password = temp->password;
     *_complexity = temp->complexity;
 

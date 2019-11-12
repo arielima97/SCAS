@@ -3,6 +3,7 @@
 #include <locale.h>
 #include <string.h>
 #include "queue.h"
+#include "linked_list.h"
 
 #define PROB_PRIORITY 20
 #define PROB_STOP 3 
@@ -22,9 +23,6 @@ struct ServiceConfiguration
 typedef struct ServiceConfiguration sConfig;
 
 bool password_check[1000];
-
-
-
 
 bool config_system_interface(sConfig* configuration)
 {
@@ -180,21 +178,30 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
 
 }
 
-sConfig global_config;
+
 
 int main()
 {  
     /* 
+    sConfig global_config;
     bool isConfig = false;
     do
         isConfig = config_system_interface(&global_config);
     while(!isConfig);
     */
+    /*
     memset(password_check, 1, 1000); // Set all values to 1 to indicate all passwords are available
     srand (time(NULL)); // Set a seed for generate random number
     
     queue costumers;
     queue_initialize(&costumers);    
     insert_costumers(password_check, &costumers);
-    queue_print(&costumers);
+    //queue_print(&costumers);
+    */
+
+    
+   list test;
+   list_initialize(&test);
+
+
 }

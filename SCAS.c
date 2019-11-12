@@ -4,6 +4,9 @@
 #include <string.h>
 #include "queue.h"
 
+#define PROB_PRIORITY 20
+#define PROB_STOP 3 
+
 enum typeServiceInterval {BY_N_OF_SERVICES, BY_TIME};
 typedef enum typeServiceInterval typeSI;
 
@@ -114,46 +117,40 @@ bool config_system_interface(sConfig* configuration)
 bool insert_costumers(bool* _password_check, queue* _costumers)
 {
     printf("\t\t<< SCAS - Cadastro clientes >>\n");
-    printf("\t (1) Cadastrar clientes\n");
+    printf("\t (1) Cadastrar clientes automaticamente\n");
     printf("\t (2) Carregar último cadastro de clientes\n");
     int read_command; 
     scanf("%d", &read_command);
     if(read_command == 1)
     {
-        printf("Inserir dado dos clientes em ordem de chegada no seguinte formato:\n");
-        printf("[PRIORIDADE][TEMPO EM MINUTOS] [COMPLEXIDADE]\n");
-        printf("PRIORIDADE: Booleano.\n");
-        printf("TEMPO EM MINUTOS: Inteiro >= 0.\n");
-        printf("COMPLEXIDADE: EXPRESSO = 1 / NORMAL = 2 / COMPLEXO = 3\n");
-        bool flag = 0;
-        int id = 0;
-        int last_time = 0;
-        do
+        printf("Inserir quantidade de clientes (máx: 1000):\n");
+        int num_clientes;
+        scanf("%d", & num_clientes);
+        if (num_clientes > 1000) num_clientes = 1000;
+        int initial_time = 0;
+        for (int i = 0; i < num_clientes; i++)
         {
-            bool priority;
-            int timestamp, complexity;
-            scanf("%d %d %d", &priority, &timestamp, &complexity);
-            if(timestamp == -1 && complexity == -1) break;
-            if(timestamp < last_time) timestamp = last_time;
-            last_time = timestamp;
-            if(complexity < 1 || complexity > 3) complexity = 1;
-            queue_add(&(*_costumers), priority, timestamp, id, 0, complexity);
-            id++;
-        }
-        while(!flag);
+            bool priority; // 0 - 1 (NO_PRIORITY, PRIORITY)
+            if((rand() % 1000) < (PROB_PRIORITY * 10))
+                priority = 1;
+            else
+                priority = 0;
+
+            int complexity; // 1 - 3 (EXPRESS, NORMAL, COMPLEX) 
+            complexity = (rand() % 3) + 1;
+
+            int time_increment; // 0 - 3 (TIMESTAMP INCREMENT)
+            time_increment = rand() % 4;
+
+            initial_time += time_increment; 
+
+            queue_add(&(*_costumers), priority, initial_time, i, NULL, complexity);
+        }       
     }
     else
     {
 
     }
-
-
-    for (int i = 0; i < 1000; ++i)
-    {
-        printf("%d %d\n", _password_check[i], rand() % 10); 
-        _password_check[i] = false;
-    }
-
 
 }
 
@@ -173,4 +170,5 @@ int main()
     queue costumers;
     queue_initialize(&costumers);    
     insert_costumers(password_check, &costumers);
+    queue_print(&costumers);
 }

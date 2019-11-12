@@ -67,4 +67,13 @@ void queue_clear(queue* q)
     q->size = 0;
 }
 
-
+void queue_print(queue* q)
+{
+    queue_item* x = q->first_item;
+    for (int i = 0; i < q->size ; i++)
+    {
+        printf("cmp: %d | id: %d | ts: %d | pw: %d | pr: %d\n", x->complexity, x->ID, x->timestamp, x->password, x->priority);
+        x = x->next_item;
+    }
+    return;    
+}

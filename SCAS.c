@@ -128,6 +128,8 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
         scanf("%d", & num_clientes);
         if (num_clientes > 1000) num_clientes = 1000;
         int initial_time = 0;
+        FILE * StoreData;
+        StoreData = fopen("last_work", "w");
         for (int i = 0; i < num_clientes; i++)
         {
             bool priority; // 0 - 1 (NO_PRIORITY, PRIORITY)
@@ -145,11 +147,35 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
             initial_time += time_increment; 
 
             queue_add(&(*_costumers), priority, initial_time, i, NULL, complexity);
-        }       
+            
+            fprintf(StoreData, "%d %d %d %d\n", priority, initial_time, i, complexity);
+        }   
+        fclose(StoreData);    
     }
     else
     {
-
+        FILE * StoredData;
+        StoredData = fopen("last_work", "r");
+        char* line = NULL;
+        int len = 0;
+        while (getline(&line, &len, StoredData) != -1)
+        {
+            bool priority;
+            int initial_time, i, complexity;
+            //printf("%s", line);
+            char* split = strtok(line," \n");
+            sscanf(split, "%d", &priority);
+            split = strtok (NULL, " \n");
+            sscanf(split, "%d", &initial_time);
+            split = strtok (NULL, " \n");
+            sscanf(split, "%d", &i);
+            split = strtok (NULL, " \n");
+            sscanf(split, "%d", &complexity);
+            split = strtok (NULL, " \n");
+            queue_add(&(*_costumers), priority, initial_time, i, NULL, complexity);
+        }
+        if(line) free(line);
+        fclose(StoredData);  
     }
 
 }

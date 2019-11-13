@@ -293,9 +293,13 @@ int main()
                 CSD[i].estimatedTime--;
                 if(CSD[i].estimatedTime < 0) CSD[i].estimatedTime = 0;
                 if(timestamp - CSD[i].first_item->entranceTime >= CSD[i].first_item->complexity)
+                {
                     list_remove_at(&CSD[i], 0);
-                CSD[i].first_item->entranceTime = timestamp;
+                    if(CSD[i].size > 0)
+                        CSD[i].first_item->entranceTime = timestamp;
+                }
             }
+            printf("Guichê %d \n\t- Tempo estimado: %d \n\t- Quantidade de clientes: %d \n", i+1, CSD[i].estimatedTime, CSD[i].size);
         }
 
         for (int i = 0; i < global_config.numPriorityCSD; i++)
@@ -305,12 +309,16 @@ int main()
                 CSD_priority[i].estimatedTime--;
                 if(CSD_priority[i].estimatedTime < 0) CSD_priority[i].estimatedTime = 0;
                 if(timestamp - CSD_priority[i].first_item->entranceTime >= CSD_priority[i].first_item->complexity)
+                {
                     list_remove_at(&CSD_priority[i], 0);
-                CSD_priority[i].first_item->entranceTime = timestamp;
+                    if(CSD_priority[i].size > 0)
+                        CSD_priority[i].first_item->entranceTime = timestamp;
+                }
             }
+            printf("Guichê Preferencial %d \n\t- Tempo estimado: %d \n\t- Quantidade de clientes: %d \n", i+1, CSD_priority[i].estimatedTime, CSD_priority[i].size);
         }
 
-
+        
 
         timestamp++;
         sum = 0;
@@ -319,13 +327,10 @@ int main()
             sum += CSD[i].size;
         for (int i = 0; i < global_config.numPriorityCSD; i++)
             sum += CSD_priority[i].size;
-        printf("Total de clientes em filas: %d\n", sum);
-    } while (sum > 0 || costumers.size > 0);
+        printf("Total de clientes em filas: %d\n\n", sum);
+    } while ((sum > 0 || costumers.size > 0));
     
-
-    
-    
-    
-    
+    printf("\n\n---------- Simulação finalizada ----------\n\n");   
+        
 
 }

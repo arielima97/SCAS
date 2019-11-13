@@ -242,6 +242,8 @@ int main()
     do
     {   
         printf("Tempo: %d\n", timestamp);
+
+        // Verifying possible new costumers at this timestamp 
         while (costumers.size > 0 && costumers.first_item->timestamp == timestamp)
         {
             int priority;
@@ -250,6 +252,9 @@ int main()
             int password;
             attComp complexity;
             queue_remove(&costumers, &priority, &ts, &entranceTime, &password, &complexity);
+            
+            // Checking whether this costumer is a priority
+
             if(priority == 1) //CSD priority
             {
                 int best_time = CSD_priority[0].estimatedTime;
@@ -264,7 +269,7 @@ int main()
                 }
 
                 list_insert_end(&CSD_priority[best_index], priority, entranceTime, getPassword(password_check), complexity);
-                CSD_priority[best_index].estimatedTime += complexity;               
+                CSD_priority[best_index].estimatedTime += complexity;              
                 if(CSD_priority[best_index].size == 1) CSD_priority[best_index].first_item->entranceTime = timestamp;
             }
             else // CSD
@@ -285,6 +290,8 @@ int main()
             }        
         }
         
+
+        // Decreasing the estimated time and checking if the attendance has finished.
 
         for (int i = 0; i < global_config.numCSD; i++)
         {
@@ -322,7 +329,7 @@ int main()
 
         timestamp++;
         sum = 0;
-        // Get the number os costumers in the CSDs
+        // Get the number of costumers in the CSDs
         for (int i = 0; i < global_config.numCSD; i++)
             sum += CSD[i].size;
         for (int i = 0; i < global_config.numPriorityCSD; i++)

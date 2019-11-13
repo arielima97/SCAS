@@ -60,13 +60,6 @@ bool queue_remove(queue* q, bool* _priority, int* _timestamp, int* _ID, int* _pa
     return true;
 }
 
-void queue_clear(queue* q)
-{
-    q->first_item = NULL;
-    q->last_item = NULL;
-    q->size = 0;
-}
-
 void queue_print(queue* q)
 {
     queue_item* x = q->first_item;

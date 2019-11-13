@@ -1,9 +1,9 @@
 typedef struct list_item_type 
 {
     int complexity;
-    int ID;
+    int entranceTime;
     int password;
-    bool priority;
+    int priority;
     struct list_item_type* next_item;
 } list_item;
 
@@ -18,10 +18,9 @@ typedef struct
 } list;
 
 void list_initialize(list* l);
-list_item* list_item_allocate(bool _priority, int _ID, int _password, int _complexity);
-void list_clear(list* l);
+list_item* list_item_allocate(int _priority, int _entranceTime, int _password, int _complexity);
 void list_print(list* l);
-bool list_insert_at(list* l, bool _priority, int _ID, int _password, int _complexity, int pos);
-bool list_insert_end(list* l, bool _priority, int _ID, int _password, int _complexity);
-bool list_at(list* l, bool* _priority, int* _ID, int* _password, attComp* _complexity);
-bool list_remove(list* l, int pos);
+bool list_insert_at(list* l, int _priority, int _entranceTime, int _password, int _complexity, int pos);
+bool list_insert_end(list* l, int _priority, int _entranceTime, int _password, int _complexity);
+bool list_at(list* l, int* _priority, int* _entranceTime, int* _password, int* _complexity, int pos);
+bool list_remove_at(list* l, int pos);

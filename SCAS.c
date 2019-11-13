@@ -178,30 +178,154 @@ bool insert_costumers(bool* _password_check, queue* _costumers)
 
 }
 
-
+int getPassword(bool v[])
+{
+    int x = rand() % 1000;
+    if(v[x] == 1)
+    {
+        v[x] = 0;
+        return x;
+    }
+    else
+    {
+        while(v[x] == 1)
+        {
+            x++;
+            if(x==1000)
+                x = 0;
+            if(v[x] == 1)
+            {
+                v[x] = 0;
+                return x;
+            }
+        }
+    }
+    
+}
 
 int main()
 {  
-    /* 
+    // Set CSD 
     sConfig global_config;
     bool isConfig = false;
     do
         isConfig = config_system_interface(&global_config);
     while(!isConfig);
-    */
-    /*
+    
+    list CSD[global_config.numCSD];
+    for (int i = 0; i < global_config.numCSD; i++)
+    {
+        list_initialize(&CSD[i]);
+        CSD[i].isPriority = 0;
+        CSD[i].stopType = global_config.type;
+    }
+
+    list CSD_priority[global_config.numPriorityCSD];
+    for (int i = 0; i < global_config.numPriorityCSD; i++)
+    {
+        list_initialize(&CSD_priority[i]);
+        CSD_priority[i].isPriority = 1;
+        CSD_priority[i].stopType = global_config.type;
+    }
+
+    // Set costumers
     memset(password_check, 1, 1000); // Set all values to 1 to indicate all passwords are available
     srand (time(NULL)); // Set a seed for generate random number
-    
     queue costumers;
     queue_initialize(&costumers);    
-    insert_costumers(password_check, &costumers);
-    //queue_print(&costumers);
-    */
+    insert_costumers(password_check, &costumers); 
+
+    printf("---------- Iniciando a simulação ----------\n\n");   
+    
+    int sum = 0;
+    int timestamp = 0;
+    do
+    {   
+        printf("Tempo: %d\n", timestamp);
+        while (costumers.size > 0 && costumers.first_item->timestamp == timestamp)
+        {
+            int priority;
+            int ts;
+            int entranceTime;
+            int password;
+            attComp complexity;
+            queue_remove(&costumers, &priority, &ts, &entranceTime, &password, &complexity);
+            if(priority == 1) //CSD priority
+            {
+                int best_time = CSD_priority[0].estimatedTime;
+                int best_index = 0;
+                for (int i = 0; i < global_config.numPriorityCSD; i++)
+                {
+                    if(CSD_priority[i].estimatedTime < best_time)
+                    {
+                        best_time = CSD_priority[i].estimatedTime;
+                        best_index = i;
+                    }
+                }
+
+                list_insert_end(&CSD_priority[best_index], priority, entranceTime, getPassword(password_check), complexity);
+                CSD_priority[best_index].estimatedTime += complexity;               
+                if(CSD_priority[best_index].size == 1) CSD_priority[best_index].first_item->entranceTime = timestamp;
+            }
+            else // CSD
+            {
+                int best_time = CSD[0].estimatedTime;
+                int best_index = 0;
+                for (int i = 0; i < global_config.numCSD; i++)
+                {
+                    if(CSD[i].estimatedTime < best_time)
+                    {
+                        best_time = CSD[i].estimatedTime;
+                        best_index = i;
+                    }
+                }
+                list_insert_end(&CSD[best_index], priority, entranceTime, getPassword(password_check), complexity);
+                CSD[best_index].estimatedTime += complexity; 
+                if(CSD[best_index].size == 1) CSD[best_index].first_item->entranceTime = timestamp;
+            }        
+        }
+        
+
+        for (int i = 0; i < global_config.numCSD; i++)
+        {
+            if(CSD[i].size > 0)
+            {
+                CSD[i].estimatedTime--;
+                if(CSD[i].estimatedTime < 0) CSD[i].estimatedTime = 0;
+                if(timestamp - CSD[i].first_item->entranceTime >= CSD[i].first_item->complexity)
+                    list_remove_at(&CSD[i], 0);
+                CSD[i].first_item->entranceTime = timestamp;
+            }
+        }
+
+        for (int i = 0; i < global_config.numPriorityCSD; i++)
+        {
+            if(CSD_priority[i].size > 0)
+            {
+                CSD_priority[i].estimatedTime--;
+                if(CSD_priority[i].estimatedTime < 0) CSD_priority[i].estimatedTime = 0;
+                if(timestamp - CSD_priority[i].first_item->entranceTime >= CSD_priority[i].first_item->complexity)
+                    list_remove_at(&CSD_priority[i], 0);
+                CSD_priority[i].first_item->entranceTime = timestamp;
+            }
+        }
+
+
+
+        timestamp++;
+        sum = 0;
+        // Get the number os costumers in the CSDs
+        for (int i = 0; i < global_config.numCSD; i++)
+            sum += CSD[i].size;
+        for (int i = 0; i < global_config.numPriorityCSD; i++)
+            sum += CSD_priority[i].size;
+        printf("Total de clientes em filas: %d\n", sum);
+    } while (sum > 0 || costumers.size > 0);
+    
 
     
-   list test;
-   list_initialize(&test);
-
+    
+    
+    
 
 }

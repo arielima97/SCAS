@@ -21,5 +21,4 @@ queue_item* queue_item_allocate(bool _priority, int _timestamp, int _ID, int _pa
 void queue_initialize(queue* q);
 bool queue_add(queue* q, bool priority, int _timestamp, int _ID, int _password, attComp _complexity);
 bool queue_remove(queue* q, bool* priority, int* _timestamp, int* _ID, int* _password, attComp* _complexity);
-void queue_clear(queue* q);
 void queue_print(queue* q);
